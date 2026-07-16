@@ -88,6 +88,98 @@
             }
         }
         
+        @keyframes slideDownNavbar {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDownNavbar 0.6s ease-out;
+        }
+        
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .navbar-brand h2 {
+            color: white;
+            margin: 0;
+            font-size: 1.8em;
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar-brand h2:hover {
+            transform: scale(1.05);
+        }
+        
+        .navbar-menu {
+            display: flex;
+            list-style: none;
+            gap: 0;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1.25rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-bottom-color: #fff;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link.active {
+            border-bottom-color: #fff;
+        }
+        
+        .navbar-stats {
+            display: flex;
+            gap: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.15);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            animation: slideInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .stat-item {
+            color: white;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+        
+        .stat-item span {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -254,6 +346,23 @@
     </style>
 </head>
 <body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h2>✓ TaskMaster</h2>
+            </div>
+            <ul class="navbar-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#tasks" class="nav-link">Tasks</a></li>
+                <li><a href="#settings" class="nav-link">Settings</a></li>
+            </ul>
+            <div class="navbar-stats">
+                <span class="stat-item">Tasks: <span id="totalTasks">1</span></span>
+                <span class="stat-item">Done: <span id="completedTasks">0</span></span>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <h1>📝 My Todo List</h1>
         
@@ -274,6 +383,13 @@
     </div>
     
     <script>
+        function updateStats() {
+            const totalItems = document.querySelectorAll('#todoList li').length;
+            const completedItems = document.querySelectorAll('#todoList li.completed').length;
+            document.getElementById('totalTasks').textContent = totalItems;
+            document.getElementById('completedTasks').textContent = completedItems;
+        }
+        
         function addTodo() {
             const input = document.getElementById('todoInput');
             const text = input.value.trim();
@@ -294,11 +410,13 @@
             list.appendChild(li);
             input.value = '';
             input.focus();
+            updateStats();
         }
         
         function toggleComplete(btn) {
             const li = btn.closest('li');
             li.classList.toggle('completed');
+            updateStats();
         }
         
         function deleteTodo(btn) {
@@ -306,6 +424,7 @@
             li.classList.add('deleting');
             setTimeout(() => {
                 li.remove();
+                updateStats();
             }, 300);
         }
         
